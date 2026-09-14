@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: securerecruit-db
+    environment:
+      POSTGRES_USER: securerecruit
+      POSTGRES_PASSWORD: securerecruit
+      POSTGRES_DB: securerecruit
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U securerecruit -d securerecruit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: securerecruit-api
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://securerecruit:securerecruit@postgres:5432/securerecruit
+      UPLOAD_DIRECTORY: /app/uploads
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000,http://localhost:80,http://frontend:80
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./backend:/app
+      - ./tests:/tests
+      - ./pytest.ini:/pytest.ini:ro
+    working_dir: /app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m app.scripts.seed &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: securerecruit-web
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
