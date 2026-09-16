@@ -6,13 +6,13 @@ Coloque aqui os prints de preparação.
 
 | Arquivo | Descrição |
 |---------|-----------|
-| `health-ok.png` | Resposta de `/health` |
-| `swagger-ok.png` | Página `/docs` |
-| `frontend-home.png` | Home do Vercel |
-| `login-candidate.png` | Dashboard do candidato |
-| `login-recruiter.png` | Dashboard do recrutador |
-| `login-admin.png` | Dashboard do admin |
-| `db-users.png` | (Opcional) tabela `users` no DBeaver |
+| `backend_health.png` | Resposta de `/health` |
+| `backend_swagger.png` | Página `/docs` |
+| `frontend_app.png` | Home / app no Vercel |
+| `dashboard_candidato.png` | Dashboard do candidato |
+| `dashboard_recrutador.png` | Dashboard do recrutador |
+| `dashboard_admin.png` | Dashboard do admin |
+| `tabela_usuarios.png` | Tabela `users` no DBeaver |
 
 ## URLs de produção
 

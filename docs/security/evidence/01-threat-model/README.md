@@ -1,3 +1,5 @@
-# Threat model e matriz de riscos (Fase 1)
+Copie ou exporte diagramas e a matriz (print de tabela) para esta pasta, se desejar evidência visual além do Markdown.
 
-Coloque aqui diagramas e exports da matriz.
+Arquivo fonte da Fase 1:
+
+`docs/security/fase-1-threat-model-matriz-riscos.md`
