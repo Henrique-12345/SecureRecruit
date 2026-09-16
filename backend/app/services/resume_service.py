@@ -1,4 +1,6 @@
+import io
 import uuid
+import zipfile
 from pathlib import Path
 
 from fastapi import UploadFile
@@ -14,6 +16,10 @@ from app.services.hash_service import calculate_file_hash, verify_file_integrity
 
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx"}
+PDF_MIME = "application/pdf"
+DOCX_MIME = (
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+)
 
 
 class ResumeService:
@@ -23,6 +29,42 @@ class ResumeService:
         self.upload_dir = Path(settings.UPLOAD_DIRECTORY)
         self.upload_dir.mkdir(parents=True, exist_ok=True)
 
+    def _validate_file_content(self, suffix: str, content: bytes) -> None:
+        """Validate magic bytes / structure, not only extension or declared MIME."""
+        if suffix == ".pdf":
+            if not content.startswith(b"%PDF"):
+                raise AppError(
+                    "File content does not match PDF format",
+                    status_code=400,
+                )
+            return
+
+        if suffix == ".docx":
+            if not content.startswith(b"PK"):
+                raise AppError(
+                    "File content does not match DOCX format",
+                    status_code=400,
+                )
+            try:
+                with zipfile.ZipFile(io.BytesIO(content)) as archive:
+                    names = set(archive.namelist())
+            except zipfile.BadZipFile as exc:
+                raise AppError(
+                    "File content is not a valid DOCX/ZIP package",
+                    status_code=400,
+                ) from exc
+
+            if "[Content_Types].xml" not in names and not any(
+                name.startswith("word/") for name in names
+            ):
+                raise AppError(
+                    "ZIP file is not a valid DOCX document",
+                    status_code=400,
+                )
+            return
+
+        raise AppError("Unsupported file extension", status_code=400)
+
     def _validate_file(self, file: UploadFile, content: bytes) -> None:
         if file.content_type not in settings.allowed_file_types_list:
             raise AppError("Unsupported file type", status_code=400)
@@ -31,11 +73,18 @@ class ResumeService:
         if suffix not in ALLOWED_EXTENSIONS:
             raise AppError("Unsupported file extension", status_code=400)
 
+        if suffix == ".pdf" and file.content_type != PDF_MIME:
+            raise AppError("MIME type does not match PDF extension", status_code=400)
+        if suffix == ".docx" and file.content_type != DOCX_MIME:
+            raise AppError("MIME type does not match DOCX extension", status_code=400)
+
         if len(content) == 0:
             raise AppError("Empty file", status_code=400)
 
         if len(content) > settings.MAX_UPLOAD_SIZE:
             raise AppError("File exceeds maximum upload size", status_code=400)
+
+        self._validate_file_content(suffix, content)
 
     def upload(
         self,

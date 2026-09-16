@@ -33,6 +33,19 @@ summary, key_skills, technologies, relevant_experience, strengths, gaps,
 compatibility_notes, compatibility_score (0-100 number or null).
 """.strip()
 
+# Patterns typical of prompt-injection attempts embedded in resume text.
+INJECTION_PATTERNS = [
+    r"ignore\s+(all\s+)?(the\s+)?(previous|prior|above|anteriores)?\s*instructions?",
+    r"ignore\s+as\s+regras",
+    r"ignore\s+as\s+instru[cç][oõ]es",
+    r"override[_ -]?ok",
+    r"compatibilidade\s*100",
+    r"score\s*100",
+    r"reveal\s+(system|internal)\s+prompt",
+    r"you\s+are\s+now",
+    r"instru[cç][aã]o\s+para\s+o\s+analisador",
+]
+
 
 KNOWN_SKILLS = [
     "python",
@@ -109,6 +122,47 @@ class AIService:
                 return
             raise ForbiddenError("Resume is not associated with your job applications")
         raise ForbiddenError("Not authorized to analyze this resume")
+
+    def _sanitize_resume_text(self, resume_text: str) -> tuple[str, bool]:
+        """Strip likely injection lines from untrusted resume text."""
+        flagged = False
+        kept: list[str] = []
+        for line in resume_text.splitlines():
+            if any(re.search(pattern, line, flags=re.IGNORECASE) for pattern in INJECTION_PATTERNS):
+                flagged = True
+                continue
+            kept.append(line)
+        return "\n".join(kept).strip(), flagged
+
+    def _harden_result(
+        self, result: AIAnalysisResult, *, injection_flagged: bool
+    ) -> AIAnalysisResult:
+        """Post-validate model output so injected phrases cannot dominate the result."""
+        summary = result.summary or ""
+        if re.search(r"override[_ -]?ok", summary, flags=re.IGNORECASE):
+            summary = re.sub(r"override[_ -]?ok", "[filtered]", summary, flags=re.IGNORECASE)
+            injection_flagged = True
+
+        score = result.compatibility_score
+        gaps = list(result.gaps or [])
+        notes = result.compatibility_notes
+
+        if injection_flagged:
+            if score is not None and score > 70:
+                score = min(score, 70.0)
+            if "Possível tentativa de manipulação do analisador detectada no currículo" not in gaps:
+                gaps.append("Possível tentativa de manipulação do analisador detectada no currículo")
+            marker = "Aviso: trechos com instruções adversárias foram filtrados antes da análise."
+            notes = f"{notes} {marker}".strip() if notes else marker
+
+        return result.model_copy(
+            update={
+                "summary": summary,
+                "compatibility_score": score,
+                "gaps": gaps,
+                "compatibility_notes": notes,
+            }
+        )
 
     def _build_prompt(self, resume_text: str, job: Job | None) -> str:
         # Explicit delimiters separate untrusted resume content from instructions.
@@ -272,7 +326,8 @@ class AIService:
 
         self._authorize_resume_access(user, resume, job)
 
-        resume_text = self._extract_text(resume)
+        raw_text = self._extract_text(resume)
+        resume_text, injection_flagged = self._sanitize_resume_text(raw_text)
         prompt = self._build_prompt(resume_text, job)
 
         result: AIAnalysisResult | None = None
@@ -283,6 +338,8 @@ class AIService:
 
         if result is None:
             result = self._local_analyze(resume_text, job)
+
+        result = self._harden_result(result, injection_flagged=injection_flagged)
 
         analysis = self._persist(
             resume=resume,
