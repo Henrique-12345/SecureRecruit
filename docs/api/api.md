@@ -1,4 +1,4 @@
-# API — SecureRecruit
+# API - SecureRecruit
 
 Base: `/api/v1`
 
@@ -59,4 +59,4 @@ Documentação interativa: `GET /docs` (Swagger) e `GET /redoc`.
 
 ## Códigos HTTP
 
-200, 201, 204, 400, 401, 403, 404, 409, 422, 500 — com corpo JSON `{ "detail": "..." }` sem stack traces.
+200, 201, 204, 400, 401, 403, 404, 409, 422, 500 - com corpo JSON `{ "detail": "..." }` sem stack traces.

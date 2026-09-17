@@ -1,4 +1,4 @@
-# Ambiente de evidências — Fase 0
+# Ambiente de evidências - Fase 0
 
 Coloque aqui os prints de preparação.
 

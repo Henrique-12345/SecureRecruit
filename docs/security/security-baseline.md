@@ -1,4 +1,4 @@
-# Security Baseline — SecureRecruit
+# Security Baseline - SecureRecruit
 
 Documento de baseline para a **primeira versão funcional**. Não descreve exploits.
 

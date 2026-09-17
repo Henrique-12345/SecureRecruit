@@ -1,4 +1,4 @@
-# Arquitetura — SecureRecruit
+# Arquitetura - SecureRecruit
 
 ## Visão geral
 
@@ -18,11 +18,11 @@ Monorepo com frontend React, backend FastAPI e PostgreSQL orquestrados por Docke
 
 ## Modelo de dados (resumo)
 
-- User 1—1 CandidateProfile
-- User(candidate) 1—N Resume
-- User(recruiter) 1—N Job
-- Application N—1 Candidate, Job, Resume
-- AIAnalysis N—1 Resume, 0..1 Job
+- User 1-1 CandidateProfile
+- User(candidate) 1-N Resume
+- User(recruiter) 1-N Job
+- Application N-1 Candidate, Job, Resume
+- AIAnalysis N-1 Resume, 0..1 Job
 - SecurityLog 0..1 User
 
 ## Autenticação e autorização

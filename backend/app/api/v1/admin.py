@@ -23,7 +23,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 @router.get("/users", response_model=list[UserAdminRead])
 def list_users(_: AdminUser, db: DbSession) -> list[UserAdminRead]:
     users = db.query(User).order_by(User.created_at.desc()).all()
-    return [UserAdminRead.model_validate(u) for u in users]
+    return [UserAdminRead.from_user(u) for u in users]
 
 
 @router.get("/users/{user_id}", response_model=UserAdminRead)
@@ -31,7 +31,7 @@ def get_user(user_id: UUID, _: AdminUser, db: DbSession) -> UserAdminRead:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise NotFoundError("User not found")
-    return UserAdminRead.model_validate(user)
+    return UserAdminRead.from_user(user)
 
 
 @router.patch("/users/{user_id}/status", response_model=UserAdminRead)
@@ -61,7 +61,7 @@ def update_user_status(
         user_agent=get_user_agent(request),
         details=f"is_active={user.is_active}",
     )
-    return UserAdminRead.model_validate(user)
+    return UserAdminRead.from_user(user)
 
 
 @router.get("/logs", response_model=list[SecurityLogRead])

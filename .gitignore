@@ -51,3 +51,8 @@ postgres_data/
 # Alembic (keep migrations)
 *.db
 *.sqlite3
+
+# temporários e locais
+_cowork_stage/
+Claude outputs/
+backend/.venv/

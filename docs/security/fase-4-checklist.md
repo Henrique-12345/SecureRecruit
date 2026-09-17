@@ -1,4 +1,4 @@
-# Checklist — Fase 4
+# Checklist - Fase 4
 
 - [x] Documento `fase-4-seguranca-ia.md` criado
 - [ ] Equipe revisou o texto

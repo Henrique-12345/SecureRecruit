@@ -1,4 +1,4 @@
-# Checklist — Fase 1
+# Checklist - Fase 1
 
 - [x] Ativos identificados
 - [x] Dados tratados classificados

@@ -1,4 +1,4 @@
-# Fase 2 — Exploração controlada (R1, R2, R3)
+# Fase 2 - Exploração controlada (R1, R2, R3)
 
 **Objetivo:** validar na prática os riscos priorizados na Fase 1, com evidências no formato:
 
@@ -23,7 +23,7 @@
 
 ## Achados preliminares (análise de código)
 
-### R1 — Autorização / IDOR
+### R1 - Autorização / IDOR
 Há checagens em:
 - `ResumeService.get_authorized`
 - `ApplicationService.get_authorized`
@@ -32,7 +32,7 @@ Há checagens em:
 **Hipótese de teste:** a maior parte deve retornar **403**. Ainda assim o teste é obrigatório (prova de controle ou descoberta de lacuna).  
 Pontos a verificar manualmente: resume de outro usuário, application de outro, `/admin/*` como candidate.
 
-### R2 — Upload
+### R2 - Upload
 Em `ResumeService._validate_file` a validação é por:
 - `Content-Type` (MIME declarado)
 - extensão (`.pdf` / `.docx`)
@@ -40,14 +40,14 @@ Em `ResumeService._validate_file` a validação é por:
 
 **Lacuna provável:** **não há verificação do conteúdo real** (magic bytes). Um arquivo com extensão `.docx` e MIME de DOCX pode ser aceito mesmo sem ser um DOCX válido.
 
-### R3 — Prompt injection / IA
+### R3 - Prompt injection / IA
 O texto do currículo entra no prompt como bloco `UNTRUSTED RESUME DATA`.  
 Mesmo com instruções de sistema, o modelo (ou a narrativa acadêmica) pode ser influenciado pelo conteúdo do arquivo.  
-Com `AI_API_KEY` vazio, usa heurística local — ainda assim o risco arquitetural e o teste didático permanecem válidos.
+Com `AI_API_KEY` vazio, usa heurística local - ainda assim o risco arquitetural e o teste didático permanecem válidos.
 
 ---
 
-## R1 — Broken Access Control / IDOR
+## R1 - Broken Access Control / IDOR
 
 ### O que é
 Tentar acessar recurso de outro usuário só trocando o ID.
@@ -68,7 +68,7 @@ Tentar acessar recurso de outro usuário só trocando o ID.
    - `GET /api/v1/resumes/{id_da_diana}`
    - `GET /api/v1/resumes/{id_da_diana}/download`
    - `GET /api/v1/applications/{id_da_diana}` (se tiver)
-   - `GET /api/v1/candidates/{id_da_diana}` (UUID do user Diana — pode pegar no login response `user.id`)
+   - `GET /api/v1/candidates/{id_da_diana}` (UUID do user Diana - pode pegar no login response `user.id`)
    - `GET /api/v1/admin/users`
 
 ### Resultados esperados
@@ -90,7 +90,7 @@ Se 200: vazamento de PII/currículo → Broken Access Control confirmado.
 
 ---
 
-## R2 — Upload inseguro (validação incompleta)
+## R2 - Upload inseguro (validação incompleta)
 
 ### O que é
 Controle de upload baseado principalmente em metadados (nome/MIME), sem garantir o conteúdo.
@@ -99,17 +99,17 @@ Controle de upload baseado principalmente em metadados (nome/MIME), sem garantir
 
 No Swagger, autenticado como Carlos (`candidate`):
 
-**Teste 2.1 — tipo rejeitado (controle positivo)**  
+**Teste 2.1 - tipo rejeitado (controle positivo)**  
 `POST /api/v1/resumes` enviando um `.txt` ou `.exe`  
 Esperado: **400** Unsupported file type/extension
 
-**Teste 2.2 — extensão/MIME “válidos”, conteúdo inválido**  
+**Teste 2.2 - extensão/MIME “válidos”, conteúdo inválido**  
 1. Crie no computador um arquivo `cv_falso.docx` que na verdade é um bloco de texto  
-   (ex.: abra o Bloco de Notas, escreva `ARQUIVO FALSO PARA TESTE ACADEMICO`, Salvar como `cv_falso.docx` — ou renomeie um `.txt` para `.docx`)
+   (ex.: abra o Bloco de Notas, escreva `ARQUIVO FALSO PARA TESTE ACADEMICO`, Salvar como `cv_falso.docx` - ou renomeie um `.txt` para `.docx`)
 2. Em `POST /api/v1/resumes`, faça upload desse arquivo  
 3. Observe se retorna **201** (aceito) ou **400**
 
-**Teste 2.3 — arquivo grande (opcional)**  
+**Teste 2.3 - arquivo grande (opcional)**  
 Se possível, teste acima de 5MB → esperado **400**
 
 ### Interpretação
@@ -130,7 +130,7 @@ Armazenamento de arquivo não conforme; risco de processar conteúdo inesperado 
 
 ---
 
-## R3 — Risco de IA (conteúdo adversário no currículo)
+## R3 - Risco de IA (conteúdo adversário no currículo)
 
 ### O que é
 Instruções embutidas no currículo tentam influenciar a análise/score.

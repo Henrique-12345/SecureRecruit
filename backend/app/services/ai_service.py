@@ -77,6 +77,18 @@ KNOWN_SKILLS = [
     "nginx",
 ]
 
+# Keyword-stuffing mitigation (R3b): a required skill only counts fully when it is
+# corroborated by an experience-like line, not just listed as a bare keyword.
+EXPERIENCE_MIN_CHARS = 40
+EXPERIENCE_MIN_WORDS = 6
+# Lines where more than this share of words are known skills read as keyword lists.
+EXPERIENCE_MAX_SKILL_DENSITY = 0.4
+UNCORROBORATED_SKILL_WEIGHT = 0.25
+
+HUMAN_REVIEW_NOTICE = (
+    "Aviso: análise automatizada de apoio; a decisão exige revisão humana do currículo."
+)
+
 
 class AIService:
     def __init__(self, db: Session):
@@ -155,6 +167,10 @@ class AIService:
             marker = "Aviso: trechos com instruções adversárias foram filtrados antes da análise."
             notes = f"{notes} {marker}".strip() if notes else marker
 
+        # Applies to local and remote results: the score is never a final decision.
+        if not notes or HUMAN_REVIEW_NOTICE not in notes:
+            notes = f"{notes} {HUMAN_REVIEW_NOTICE}".strip() if notes else HUMAN_REVIEW_NOTICE
+
         return result.model_copy(
             update={
                 "summary": summary,
@@ -186,10 +202,32 @@ class AIService:
             "===== END JOB DATA =====\n"
         )
 
+    @staticmethod
+    def _experience_lines(resume_text: str) -> list[str]:
+        """Lines that read as described experience rather than bare keyword lists."""
+        lines: list[str] = []
+        for line in resume_text.splitlines():
+            stripped = line.strip()
+            if len(stripped) <= EXPERIENCE_MIN_CHARS:
+                continue
+            words = re.findall(r"[\wÀ-ÿ+#./-]+", stripped.lower())
+            if len(words) < EXPERIENCE_MIN_WORDS:
+                continue
+            skill_words = sum(1 for w in words if any(s in w for s in KNOWN_SKILLS))
+            if skill_words / len(words) > EXPERIENCE_MAX_SKILL_DENSITY:
+                continue
+            lines.append(stripped)
+        return lines
+
     def _local_analyze(self, resume_text: str, job: Job | None) -> AIAnalysisResult:
         text_lower = resume_text.lower()
         skills = [s for s in KNOWN_SKILLS if s in text_lower]
         unique_skills = sorted(set(skills))
+
+        experience_lines = self._experience_lines(resume_text)
+        experience_lower = "\n".join(experience_lines).lower()
+        corroborated_skills = [s for s in unique_skills if s in experience_lower]
+        claimed_only_skills = [s for s in unique_skills if s not in corroborated_skills]
 
         score = None
         gaps: list[str] = []
@@ -200,15 +238,34 @@ class AIService:
             matched = [s for s in unique_skills if s in req_tokens or any(s in t for t in req_tokens)]
             required_hint = [t for t in KNOWN_SKILLS if t in job.requirements.lower()]
             if required_hint:
-                overlap = len(set(matched) & set(required_hint))
-                score = round((overlap / max(len(required_hint), 1)) * 100, 1)
+                matched_required = [s for s in required_hint if s in matched]
+                corroborated = [s for s in matched_required if s in corroborated_skills]
+                claimed_only = [s for s in matched_required if s not in corroborated]
+                weighted = len(corroborated) + UNCORROBORATED_SKILL_WEIGHT * len(claimed_only)
+                score = round((weighted / len(required_hint)) * 100, 1)
                 gaps = [s for s in required_hint if s not in matched]
             else:
-                score = min(100.0, 40.0 + len(unique_skills) * 5)
+                corroborated = corroborated_skills
+                claimed_only = claimed_only_skills
+                weighted = len(corroborated) + UNCORROBORATED_SKILL_WEIGHT * len(claimed_only)
+                score = min(100.0, round(40.0 + weighted * 5, 1))
+
+            if claimed_only:
+                gaps.append(
+                    "Competências apenas listadas, sem experiência descrita que as corrobore: "
+                    + ", ".join(claimed_only)
+                )
             compatibility_notes = (
-                f"Matched skills: {', '.join(matched) or 'none'}. "
-                f"Potential gaps: {', '.join(gaps) or 'none identified'}."
+                f"Competências encontradas: {', '.join(matched) or 'nenhuma'}. "
+                f"Corroboradas por experiência: {', '.join(corroborated) or 'nenhuma'}. "
+                f"Apenas listadas (peso reduzido): {', '.join(claimed_only) or 'nenhuma'}. "
+                f"Lacunas potenciais: {', '.join(g for g in gaps if g in KNOWN_SKILLS) or 'nenhuma identificada'}."
             )
+            if claimed_only:
+                compatibility_notes += (
+                    " Aviso: possível keyword stuffing - competências listadas sem contexto "
+                    "de experiência receberam peso reduzido."
+                )
 
         summary = (
             "Análise heurística local do currículo. "
@@ -221,11 +278,7 @@ class AIService:
             summary=summary,
             key_skills=unique_skills[:15],
             technologies=unique_skills[:15],
-            relevant_experience=[
-                line.strip()
-                for line in resume_text.splitlines()
-                if len(line.strip()) > 40
-            ][:5],
+            relevant_experience=experience_lines[:5],
             strengths=unique_skills[:5] or ["Experiência profissional descrita no currículo"],
             gaps=gaps or ["Informações de formação ou métricas de impacto poderiam ser mais detalhadas"],
             compatibility_notes=compatibility_notes,

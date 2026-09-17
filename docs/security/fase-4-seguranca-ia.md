@@ -1,4 +1,4 @@
-# Fase 4 — Segurança da IA: cenário de risco e mitigação
+# Fase 4 - Segurança da IA: cenário de risco e mitigação
 
 **Aplicação:** SecureRecruit  
 **Funcionalidade de IA:** análise / match de currículo (`POST /api/v1/ai/analyze-resume`, `POST /api/v1/ai/match-resume-job`)  
@@ -61,11 +61,11 @@ O objetivo é **manipular a avaliação automatizada**, não necessariamente inv
 | Disponibilidade | Baixo |
 
 ### 2.4 Probabilidade
-Alta em sistemas que concatenam texto de usuário ao prompt sem controles adicionais — qualquer candidato pode tentar.
+Alta em sistemas que concatenam texto de usuário ao prompt sem controles adicionais - qualquer candidato pode tentar.
 
 ---
 
-## 3. Demonstração (Fase 2 — antes da mitigação reforçada)
+## 3. Demonstração (Fase 2 - antes da mitigação reforçada)
 
 ### Método
 1. Criar DOCX com parágrafo adversário.  

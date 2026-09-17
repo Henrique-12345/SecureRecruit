@@ -1,6 +1,6 @@
-# Fase 2 — Resultados da exploração controlada
+# Fase 2 - Resultados da exploração controlada
 
-## R1 — Autorização
+## R1 - Autorização
 
 | Teste | Resultado | Interpretação |
 |-------|-----------|---------------|
@@ -11,11 +11,11 @@
 
 **Evidências:** `evidence/02-exploracao/r1-*.png`
 
-**Impacto do achado `/recruiters/*`:** baixo/médio — não vaza dados de terceiros, mas quebra a expectativa de que rotas de recrutador exijam papel `recruiter`.
+**Impacto do achado `/recruiters/*`:** baixo/médio - não vaza dados de terceiros, mas quebra a expectativa de que rotas de recrutador exijam papel `recruiter`.
 
 ---
 
-## R2 — Upload
+## R2 - Upload
 
 | Teste | Resultado | Interpretação |
 |-------|-----------|---------------|
@@ -28,7 +28,7 @@
 
 ---
 
-## R3 — IA / prompt injection
+## R3 - IA / prompt injection
 
 | Teste | Resultado | Interpretação |
 |-------|-----------|---------------|

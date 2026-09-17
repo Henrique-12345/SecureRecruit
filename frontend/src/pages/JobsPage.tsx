@@ -16,7 +16,7 @@ export function HomePage() {
         <h1>SecureRecruit</h1>
         <p>
           Plataforma de recrutamento e seleção com perfis, currículos, candidaturas e análise por
-          IA — construída para estudos acadêmicos de cibersegurança aplicada a dados e IA.
+          IA - construída para estudos acadêmicos de cibersegurança aplicada a dados e IA.
         </p>
         <div className="actions">
           <Link className="btn primary" to="/jobs">

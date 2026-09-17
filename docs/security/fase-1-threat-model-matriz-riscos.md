@@ -1,4 +1,4 @@
-# Fase 1 — Threat Modeling e Matriz de Riscos
+# Fase 1 - Threat Modeling e Matriz de Riscos
 
 **Projeto:** SecureRecruit (SecureAI Lab)  
 **Disciplina:** Cibersegurança Aplicada a Dados e IA  
@@ -13,8 +13,8 @@ Este documento atende à etapa de análise de segurança **antes** dos testes de
 
 A SecureRecruit é uma plataforma web de recrutamento e seleção com:
 
-- Frontend React (Vercel) — `https://secure-recruit.vercel.app`
-- API FastAPI (Render) — `https://securerecruit-api.onrender.com`
+- Frontend React (Vercel) - `https://secure-recruit.vercel.app`
+- API FastAPI (Render) - `https://securerecruit-api.onrender.com`
 - Banco PostgreSQL (Render)
 - Upload de currículos, análise por IA e logs de auditoria
 
@@ -63,7 +63,7 @@ A SecureRecruit é uma plataforma web de recrutamento e seleção com:
 | Anônimo | Ver vagas abertas (leitura pública limitada) | Ações autenticadas |
 | `candidate` | Perfil próprio, upload/CV próprio, candidaturas próprias, IA sobre próprios dados | Admin, logs, vagas de terceiros, CVs alheios |
 | `recruiter` | CRUD das próprias vagas, candidaturas/CVs ligados às suas vagas, IA nesses contextos | Admin de usuários/logs, alterar outros recrutadores |
-| `admin` | Usuários, status de contas, logs, visão ampla, checagem de integridade | (Poder amplo — risco de abuso de privilégio) |
+| `admin` | Usuários, status de contas, logs, visão ampla, checagem de integridade | (Poder amplo - risco de abuso de privilégio) |
 
 **Controle de UI ≠ segurança:** o frontend esconde menus; a autorização efetiva deve estar no backend.
 

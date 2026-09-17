@@ -63,7 +63,7 @@ export function AppLayout() {
         <Outlet />
       </main>
       <footer className="footer">
-        SecureRecruit — plataforma acadêmica fictícia para estudo de cibersegurança.
+        SecureRecruit - plataforma acadêmica fictícia para estudo de cibersegurança.
       </footer>
     </div>
   )

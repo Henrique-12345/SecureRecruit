@@ -1,4 +1,4 @@
-# Evidências — Fase 2 (Exploração)
+# Evidências - Fase 2 (Exploração)
 
 Coloque aqui os prints dos testes R1, R2 e R3.
 

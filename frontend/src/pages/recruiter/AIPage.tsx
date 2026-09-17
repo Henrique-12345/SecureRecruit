@@ -61,7 +61,7 @@ export function RecruiterAIPage() {
           <select value={resumeId} onChange={(e) => setResumeId(e.target.value)}>
             {apps.map((a) => (
               <option key={a.id} value={a.resume_id}>
-                {a.candidate_name} — {a.resume_filename}
+                {a.candidate_name} - {a.resume_filename}
               </option>
             ))}
           </select>

@@ -1,4 +1,4 @@
-# Checklist — Fase 2
+# Checklist - Fase 2
 
 - [ ] R1 executado no Swagger (Carlos × recursos da Diana + admin)
 - [ ] R2: rejeição de tipo inválido testada

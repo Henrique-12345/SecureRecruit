@@ -1,4 +1,4 @@
-# Evidências — Fase 4 (IA)
+# Evidências - Fase 4 (IA)
 
 Os prints principais já estão em:
 

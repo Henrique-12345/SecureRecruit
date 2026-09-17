@@ -1,4 +1,4 @@
-# Evidências — SecureAI Lab / SecureRecruit
+# Evidências - SecureAI Lab / SecureRecruit
 
 Pasta para organizar prints, logs e artefatos do ciclo:
 

@@ -1,14 +1,14 @@
-# Fase 3 — Correções e plano de reteste
+# Fase 3 - Correções e plano de reteste
 
 ## Correções implementadas no código
 
-### R1 — `/recruiters/me` e `/recruiters/me/jobs`
+### R1 - `/recruiters/me` e `/recruiters/me/jobs`
 **Antes:** qualquer usuário autenticado (`CurrentUser`).  
 **Depois:** `RecruiterUser` (papéis `recruiter` ou `admin`).  
 **Arquivo:** `backend/app/api/v1/recruiters.py`  
 **Proteção:** autorização por função/papel (Broken Function Level Authorization).
 
-### R2 — Upload
+### R2 - Upload
 **Antes:** validação por MIME + extensão + tamanho.  
 **Depois:** também valida:
 - assinatura `%PDF` para PDF
@@ -17,7 +17,7 @@
 
 **Arquivo:** `backend/app/services/resume_service.py`
 
-### R3 — IA
+### R3 - IA
 **Antes:** texto do currículo ia direto ao analisador.  
 **Depois:**
 1. sanitização de linhas com padrões de injeção

@@ -1,4 +1,4 @@
-# Checklist — Fase 0 (Preparação)
+# Checklist - Fase 0 (Preparação)
 
 Marque com `[x]` quando concluir.
 
@@ -32,7 +32,7 @@ Marque com `[x]` quando concluir.
 - [ ] `login-candidate.png` (dashboard do candidato)
 - [ ] `login-recruiter.png` (dashboard do recrutador)
 - [ ] `login-admin.png` (dashboard do admin)
-- [ ] `db-users.png` (opcional — DBeaver com emails/roles)
+- [ ] `db-users.png` (opcional - DBeaver com emails/roles)
 
 ## Critério de conclusão
 

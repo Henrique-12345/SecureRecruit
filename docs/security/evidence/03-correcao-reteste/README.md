@@ -1,4 +1,4 @@
-# Evidências — Fase 3 (Correção e reteste)
+# Evidências - Fase 3 (Correção e reteste)
 
 ## Nomes sugeridos
 

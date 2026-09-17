@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     @property
     def sqlalchemy_database_url(self) -> str:
-        # Render/Neon often provide postgresql:// — normalize for SQLAlchemy+psycopg3.
+        # Render/Neon often provide postgresql:// - normalize for SQLAlchemy+psycopg3.
         url = self.DATABASE_URL
         if url.startswith("postgres://"):
             return url.replace("postgres://", "postgresql+psycopg://", 1)
