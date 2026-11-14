@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.v1 import (
     admin,
     ai,
+    analytics,
     applications,
     auth,
     candidates,
@@ -29,3 +30,4 @@ api_router.include_router(admin.router)
 api_router.include_router(logs.router)
 api_router.include_router(crypto.router)
 api_router.include_router(stego.router)
+api_router.include_router(analytics.router)
