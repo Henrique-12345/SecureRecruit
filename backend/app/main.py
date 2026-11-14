@@ -14,9 +14,23 @@ from app.core.exceptions import (
 )
 
 
+def _ensure_data_dir(path_str: str) -> Path:
+    """Create upload/stego dirs; fall back to repo-root if CWD is backend/."""
+    path = Path(path_str)
+    candidates = [path] if path.is_absolute() else [Path.cwd() / path, Path.cwd().parent / path]
+    last_error: OSError | None = None
+    for candidate in candidates:
+        try:
+            candidate.mkdir(parents=True, exist_ok=True)
+            return candidate.resolve()
+        except OSError as exc:
+            last_error = exc
+    raise RuntimeError(f"Cannot create data directory for {path_str}: {last_error}")
+
+
 def create_app() -> FastAPI:
-    Path(settings.UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
-    Path(settings.STEGO_DIRECTORY).mkdir(parents=True, exist_ok=True)
+    _ensure_data_dir(settings.UPLOAD_DIRECTORY)
+    _ensure_data_dir(settings.STEGO_DIRECTORY)
 
     app = FastAPI(
         title=settings.APP_NAME,
