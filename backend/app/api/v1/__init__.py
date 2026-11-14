@@ -11,6 +11,7 @@ from app.api.v1 import (
     logs,
     recruiters,
     resumes,
+    stego,
     users,
 )
 
@@ -27,3 +28,4 @@ api_router.include_router(ai.router)
 api_router.include_router(admin.router)
 api_router.include_router(logs.router)
 api_router.include_router(crypto.router)
+api_router.include_router(stego.router)
