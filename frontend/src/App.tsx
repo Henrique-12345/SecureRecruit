@@ -25,6 +25,13 @@ import { AdminUsersPage } from './pages/admin/UsersPage'
 import { AdminUserDetailPage } from './pages/admin/UserDetailPage'
 import { AdminApplicationsPage } from './pages/admin/ApplicationsPage'
 import { AdminLogsPage } from './pages/admin/LogsPage'
+import { CryptoLabHome } from './pages/admin/crypto/CryptoLabHome'
+import { CryptoEncryptPage } from './pages/admin/crypto/CryptoEncryptPage'
+import { CryptoStegoPage } from './pages/admin/crypto/CryptoStegoPage'
+import { CryptoAttacksPage } from './pages/admin/crypto/CryptoAttacksPage'
+import { CryptoAvalanchePage } from './pages/admin/crypto/CryptoAvalanchePage'
+import { SecurityDashboardPage } from './pages/admin/SecurityDashboardPage'
+import { AnomaliesPage } from './pages/admin/AnomaliesPage'
 
 export default function App() {
   return (
@@ -68,6 +75,13 @@ export default function App() {
           <Route path="/admin/users/:userId" element={<AdminUserDetailPage />} />
           <Route path="/admin/applications" element={<AdminApplicationsPage />} />
           <Route path="/admin/logs" element={<AdminLogsPage />} />
+          <Route path="/admin/crypto" element={<CryptoLabHome />} />
+          <Route path="/admin/crypto/encrypt" element={<CryptoEncryptPage />} />
+          <Route path="/admin/crypto/stego" element={<CryptoStegoPage />} />
+          <Route path="/admin/crypto/attacks" element={<CryptoAttacksPage />} />
+          <Route path="/admin/crypto/avalanche" element={<CryptoAvalanchePage />} />
+          <Route path="/admin/security-dashboard" element={<SecurityDashboardPage />} />
+          <Route path="/admin/anomalies" element={<AnomaliesPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
