@@ -16,6 +16,7 @@ from app.core.exceptions import (
 
 def create_app() -> FastAPI:
     Path(settings.UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
+    Path(settings.STEGO_DIRECTORY).mkdir(parents=True, exist_ok=True)
 
     app = FastAPI(
         title=settings.APP_NAME,

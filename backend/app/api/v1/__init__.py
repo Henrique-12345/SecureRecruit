@@ -6,6 +6,7 @@ from app.api.v1 import (
     applications,
     auth,
     candidates,
+    crypto,
     jobs,
     logs,
     recruiters,
@@ -25,3 +26,4 @@ api_router.include_router(applications.router)
 api_router.include_router(ai.router)
 api_router.include_router(admin.router)
 api_router.include_router(logs.router)
+api_router.include_router(crypto.router)
