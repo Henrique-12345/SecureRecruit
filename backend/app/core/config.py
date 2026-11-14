@@ -6,7 +6,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        # Prefer repo-root .env when running from backend/
+        env_file=(".env", "../.env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -16,7 +17,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     DATABASE_URL: str = (
-        "postgresql+psycopg://securerecruit:securerecruit@localhost:5432/securerecruit"
+        "postgresql+psycopg://securerecruit:securerecruit@localhost:5433/securerecruit"
     )
 
     JWT_SECRET_KEY: str = "change-me-to-a-long-random-secret-in-production"

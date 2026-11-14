@@ -4,4 +4,4 @@
 - [x] Decisões documentadas em `00-decisoes.md`
 - [x] Pastas `docs/security/unidade-2/` e `evidence/unidade-2/`
 - [x] Pacotes `services/crypto`, `services/stego`, `services/anomaly`
-- [ ] Push da branch para o GitHub (equipe)
+- [x] Push da branch para o GitHub (equipe)
