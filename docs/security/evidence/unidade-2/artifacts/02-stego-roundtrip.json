@@ -1,0 +1,8 @@
+{
+  "generated_at": "2026-11-14T22:49:23.687258+00:00",
+  "capacity_bits": 49152,
+  "payload_bits": 456,
+  "extract_matches_ciphertext": true,
+  "cover_file": "02-cover-demo.png",
+  "stego_file": "02-stego-demo.png"
+}

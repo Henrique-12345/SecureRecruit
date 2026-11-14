@@ -35,6 +35,8 @@ frontend/.vite/
 # Uploads (keep directory, ignore files)
 uploads/*
 !uploads/.gitkeep
+!uploads/stego/
+!uploads/stego/.gitkeep
 
 # IDE / OS
 .idea/

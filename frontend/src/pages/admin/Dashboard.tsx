@@ -5,7 +5,7 @@ export function AdminDashboard() {
     <div className="stack">
       <div className="hero">
         <h1>Administração</h1>
-        <p>Gestão de usuários, candidaturas e logs de segurança.</p>
+        <p>Gestão de usuários, candidaturas, logs e Crypto Lab (Unidade 2).</p>
       </div>
       <div className="grid two">
         <Link className="panel" to="/admin/users">
@@ -19,6 +19,14 @@ export function AdminDashboard() {
         <Link className="panel" to="/admin/logs">
           <h3>Logs de segurança</h3>
           <p className="muted">Auditoria de eventos relevantes.</p>
+        </Link>
+        <Link className="panel" to="/admin/crypto">
+          <h3>Crypto Lab</h3>
+          <p className="muted">Cifra, stego, ataques e métricas (Unidade 2).</p>
+        </Link>
+        <Link className="panel" to="/admin/security-dashboard">
+          <h3>Dashboard de segurança</h3>
+          <p className="muted">KPIs, séries temporais e anomalias.</p>
         </Link>
         <Link className="panel" to="/jobs">
           <h3>Vagas</h3>

@@ -14,8 +14,41 @@ from app.core.exceptions import (
 )
 
 
+def _ensure_data_dir(path_str: str) -> Path:
+    """Create upload/stego dirs; fall back to repo-root if CWD is backend/."""
+    path = Path(path_str)
+    candidates = [path] if path.is_absolute() else [Path.cwd() / path, Path.cwd().parent / path]
+    last_error: OSError | None = None
+    for candidate in candidates:
+        try:
+            candidate.mkdir(parents=True, exist_ok=True)
+            return candidate.resolve()
+        except OSError as exc:
+            last_error = exc
+    raise RuntimeError(f"Cannot create data directory for {path_str}: {last_error}")
+
+
+def _warn_insecure_defaults() -> None:
+    if settings.APP_ENV.lower() not in {"production", "prod"}:
+        return
+    weak = []
+    if settings.JWT_SECRET_KEY.startswith("change-me"):
+        weak.append("JWT_SECRET_KEY")
+    if settings.CRYPTO_MASTER_SECRET.startswith("change-me"):
+        weak.append("CRYPTO_MASTER_SECRET")
+    if weak:
+        import logging
+
+        logging.getLogger("securerecruit").warning(
+            "Insecure default secrets in production: %s — rotate before academic demo goes public.",
+            ", ".join(weak),
+        )
+
+
 def create_app() -> FastAPI:
-    Path(settings.UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
+    _ensure_data_dir(settings.UPLOAD_DIRECTORY)
+    _ensure_data_dir(settings.STEGO_DIRECTORY)
+    _warn_insecure_defaults()
 
     app = FastAPI(
         title=settings.APP_NAME,

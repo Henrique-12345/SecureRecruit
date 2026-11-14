@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-11-14T22:49:23.687258+00:00",
+  "algorithm": "custom_spn",
+  "roundtrip_ok": true,
+  "plaintext_len": 38,
+  "ciphertext_b64": "AUUNE16BlEDM6LkjdBZR8GMyBG+R0mejn9lBIgWZcA3TMgC3KoPWe8oL+/CKAR2pnw==",
+  "key_fingerprint": "dd6c7cdb37409310a5dfbff2f5730dba1f907f2e2e03b56022fcfa1ad5a4c87b",
+  "note": "Key material is not persisted; fingerprint only."
+}

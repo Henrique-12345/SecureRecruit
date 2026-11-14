@@ -34,6 +34,8 @@ export function AppLayout() {
               <NavLink to="/admin/users">Usuários</NavLink>
               <NavLink to="/admin/applications">Candidaturas</NavLink>
               <NavLink to="/admin/logs">Logs</NavLink>
+              <NavLink to="/admin/crypto">Crypto Lab</NavLink>
+              <NavLink to="/admin/security-dashboard">Segurança</NavLink>
             </>
           )}
         </nav>
