@@ -36,6 +36,13 @@ class Settings(BaseSettings):
 
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
 
+    # Unit 2 — Crypto Lab
+    CRYPTO_LAB_ENABLED: bool = True
+    CRYPTO_MASTER_SECRET: str = "change-me-crypto-master-secret-unit2"
+    CRYPTO_PBKDF2_ITERATIONS: int = 100_000
+    STEGO_DIRECTORY: str = "./uploads/stego"
+    CRYPTO_LAB_MAX_ATTACK_ATTEMPTS: int = 50_000
+
     @property
     def sqlalchemy_database_url(self) -> str:
         # Render/Neon often provide postgresql:// - normalize for SQLAlchemy+psycopg3.
