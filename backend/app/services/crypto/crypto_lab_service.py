@@ -345,6 +345,11 @@ class CryptoLabService:
         if algorithm not in allowed:
             raise AppError(f"Unsupported algorithm: {algorithm}", status_code=400)
 
+    def resolve_key(
+        self, *, user: User, algorithm: str, key_id: UUID | None
+    ) -> tuple[CryptoKeyMaterial, bytes]:
+        return self._resolve_key(user=user, algorithm=algorithm, key_id=key_id)
+
     def _resolve_key(
         self, *, user: User, algorithm: str, key_id: UUID | None
     ) -> tuple[CryptoKeyMaterial, bytes]:

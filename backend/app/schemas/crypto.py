@@ -97,3 +97,36 @@ class CryptoOperationRead(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class BruteForceAttackRequest(BaseModel):
+    plaintext: str = Field(..., min_length=1, max_length=10_000)
+    searchable_bits: int = Field(default=12, ge=1, le=20)
+    key_id: UUID | None = None
+
+
+class DifferentialAttackRequest(BaseModel):
+    plaintext: str = Field(..., min_length=1, max_length=10_000)
+    key_id: UUID | None = None
+    flip_byte_index: int = Field(default=0, ge=0)
+    flip_bit_mask: int = Field(default=0x01, ge=1, le=255)
+
+
+class StatisticalAttackRequest(BaseModel):
+    plaintext: str | None = Field(default=None, max_length=10_000)
+    ciphertext_b64: str | None = None
+    key_id: UUID | None = None
+
+
+class AttackExperimentRead(BaseModel):
+    id: UUID
+    user_id: UUID | None
+    attack_type: str
+    algorithm: str
+    parameters: dict | None
+    result_summary: str | None
+    metrics: dict | None
+    effectiveness_score: float | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}

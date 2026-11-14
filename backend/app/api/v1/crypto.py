@@ -4,18 +4,23 @@ from fastapi import APIRouter, Query, Request
 
 from app.dependencies.auth import AdminUser, DbSession
 from app.schemas.crypto import (
+    AttackExperimentRead,
     AvalancheRequest,
     AvalancheResponse,
+    BruteForceAttackRequest,
     CryptoOperationRead,
     DecryptRequest,
     DecryptResponse,
+    DifferentialAttackRequest,
     EncryptRequest,
     EncryptResponse,
     KeyGenerateRequest,
     KeyMaterialRead,
+    StatisticalAttackRequest,
     StatisticalRequest,
     StatisticalResponse,
 )
+from app.services.crypto.attack_lab_service import AttackLabService
 from app.services.crypto.crypto_lab_service import CryptoLabService
 from app.utils.request import get_client_ip, get_user_agent
 
@@ -151,3 +156,76 @@ def statistical(
         algorithm=operation.algorithm,
         report=report,
     )
+
+
+@router.post("/attacks/brute-force", response_model=AttackExperimentRead)
+def attack_brute_force(
+    payload: BruteForceAttackRequest,
+    request: Request,
+    admin: AdminUser,
+    db: DbSession,
+) -> AttackExperimentRead:
+    experiment = AttackLabService(db).brute_force(
+        user=admin,
+        plaintext=payload.plaintext,
+        searchable_bits=payload.searchable_bits,
+        key_id=payload.key_id,
+        ip_address=get_client_ip(request),
+        user_agent=get_user_agent(request),
+    )
+    return AttackExperimentRead.model_validate(experiment)
+
+
+@router.post("/attacks/differential", response_model=AttackExperimentRead)
+def attack_differential(
+    payload: DifferentialAttackRequest,
+    request: Request,
+    admin: AdminUser,
+    db: DbSession,
+) -> AttackExperimentRead:
+    experiment = AttackLabService(db).differential(
+        user=admin,
+        plaintext=payload.plaintext,
+        key_id=payload.key_id,
+        flip_byte_index=payload.flip_byte_index,
+        flip_bit_mask=payload.flip_bit_mask,
+        ip_address=get_client_ip(request),
+        user_agent=get_user_agent(request),
+    )
+    return AttackExperimentRead.model_validate(experiment)
+
+
+@router.post("/attacks/statistical", response_model=AttackExperimentRead)
+def attack_statistical(
+    payload: StatisticalAttackRequest,
+    request: Request,
+    admin: AdminUser,
+    db: DbSession,
+) -> AttackExperimentRead:
+    experiment = AttackLabService(db).statistical(
+        user=admin,
+        ciphertext_b64=payload.ciphertext_b64,
+        plaintext=payload.plaintext,
+        key_id=payload.key_id,
+        ip_address=get_client_ip(request),
+        user_agent=get_user_agent(request),
+    )
+    return AttackExperimentRead.model_validate(experiment)
+
+
+@router.get("/attacks/experiments", response_model=list[AttackExperimentRead])
+def list_attack_experiments(
+    _: AdminUser,
+    db: DbSession,
+    limit: int = Query(default=50, ge=1, le=200),
+) -> list[AttackExperimentRead]:
+    items = AttackLabService(db).list_experiments(limit=limit)
+    return [AttackExperimentRead.model_validate(e) for e in items]
+
+
+@router.get("/attacks/experiments/{experiment_id}", response_model=AttackExperimentRead)
+def get_attack_experiment(
+    experiment_id: UUID, _: AdminUser, db: DbSession
+) -> AttackExperimentRead:
+    experiment = AttackLabService(db).get_experiment(experiment_id)
+    return AttackExperimentRead.model_validate(experiment)
