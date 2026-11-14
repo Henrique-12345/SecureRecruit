@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-11-14T22:49:23.687258+00:00",
+  "phase": 8,
+  "artifacts": [
+    "01-different-keys.json",
+    "01-encrypt-decrypt-spn.json",
+    "02-stego-roundtrip.json",
+    "03-attack-brute-force.json",
+    "03-attack-differential.json",
+    "03-attack-statistical.json",
+    "04-avalanche.json"
+  ],
+  "images": [
+    "02-cover-demo.png",
+    "02-stego-demo.png"
+  ],
+  "note": "Screenshots da UI devem ser adicionados nas pastas 01–06."
+}

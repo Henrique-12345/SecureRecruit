@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-11-14T22:49:23.687258+00:00",
+  "report": {
+    "length": 49,
+    "entropy_bits": 5.410628,
+    "max_entropy_bits": 8.0,
+    "chi_square_uniform": 259.2449,
+    "unique_bytes": 44,
+    "top_bytes": [
+      {
+        "byte": "01",
+        "count": 2,
+        "ratio": 0.040816
+      },
+      {
+        "byte": "0d",
+        "count": 2,
+        "ratio": 0.040816
+      },
+      {
+        "byte": "f0",
+        "count": 2,
+        "ratio": 0.040816
+      },
+      {
+        "byte": "32",
+        "count": 2,
+        "ratio": 0.040816
+      },
+      {
+        "byte": "9f",
+        "count": 2,
+        "ratio": 0.040816
+      },
+      {
+        "byte": "45",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "13",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "5e",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "81",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "94",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "40",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "cc",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "e8",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "b9",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "23",
+        "count": 1,
+        "ratio": 0.020408
+      },
+      {
+        "byte": "74",
+        "count": 1,
+        "ratio": 0.020408
+      }
+    ]
+  },
+  "effectiveness_score": 0.647343,
+  "label": "eficaz (baixa entropia / padrões exploráveis)"
+}

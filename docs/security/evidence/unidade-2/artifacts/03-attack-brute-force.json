@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-11-14T22:49:23.687258+00:00",
+  "found": true,
+  "attempts": 401,
+  "keyspace_size": 1024,
+  "elapsed_ms": 24,
+  "estimated_full_keyspace_years": 2.197551957953598e+65,
+  "effectiveness_score": 0.80419921875,
+  "label": "eficaz (chave truncada recuperada no lab)"
+}
