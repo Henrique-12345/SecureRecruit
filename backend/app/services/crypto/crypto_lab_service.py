@@ -15,13 +15,14 @@ from app.core.enums import (
     CryptoOperationType,
     SecurityEventType,
 )
-from app.core.exceptions import AppError, ForbiddenError, NotFoundError
+from app.core.exceptions import AppError, NotFoundError
 from app.models.crypto_key_material import CryptoKeyMaterial
 from app.models.crypto_operation import CryptoOperation
 from app.models.user import User
 from app.services.audit_service import AuditService
 from app.services.crypto import aes_service, custom_cipher
 from app.services.crypto import metrics as crypto_metrics
+from app.services.crypto.guards import ensure_crypto_lab_enabled, enforce_plaintext_size
 from app.services.crypto.key_service import derive_key
 
 
@@ -30,8 +31,7 @@ class CryptoLabService:
         self.db = db
 
     def _ensure_enabled(self) -> None:
-        if not settings.CRYPTO_LAB_ENABLED:
-            raise ForbiddenError("Crypto Lab is disabled")
+        ensure_crypto_lab_enabled()
 
     def generate_key(
         self,
@@ -84,6 +84,7 @@ class CryptoLabService:
         """Returns (operation, ciphertext_b64, key_fingerprint)."""
         self._ensure_enabled()
         self._validate_algorithm(algorithm)
+        enforce_plaintext_size(plaintext, label="plaintext")
         started = time.perf_counter()
         key_material, key_bytes = self._resolve_key(user=user, algorithm=algorithm, key_id=key_id)
 
@@ -240,6 +241,7 @@ class CryptoLabService:
         self._validate_algorithm(algorithm)
         if not plaintext:
             raise AppError("Plaintext required", status_code=400)
+        enforce_plaintext_size(plaintext, label="plaintext")
 
         key_material, key_bytes = self._resolve_key(user=user, algorithm=algorithm, key_id=key_id)
         flipped = bytearray(plaintext)

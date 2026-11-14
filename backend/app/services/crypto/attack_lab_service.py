@@ -15,7 +15,7 @@ from app.core.enums import (
     CryptoOperationType,
     SecurityEventType,
 )
-from app.core.exceptions import AppError, ForbiddenError, NotFoundError
+from app.core.exceptions import AppError, NotFoundError
 from app.models.attack_experiment import AttackExperiment
 from app.models.crypto_operation import CryptoOperation
 from app.models.user import User
@@ -23,6 +23,11 @@ from app.services.audit_service import AuditService
 from app.services.crypto import custom_cipher
 from app.services.crypto.attacks import brute_force, differential, statistical
 from app.services.crypto.crypto_lab_service import CryptoLabService
+from app.services.crypto.guards import (
+    clamp_searchable_bits,
+    ensure_crypto_lab_enabled,
+    enforce_plaintext_size,
+)
 
 
 class AttackLabService:
@@ -30,8 +35,7 @@ class AttackLabService:
         self.db = db
 
     def _ensure_enabled(self) -> None:
-        if not settings.CRYPTO_LAB_ENABLED:
-            raise ForbiddenError("Crypto Lab is disabled")
+        ensure_crypto_lab_enabled()
 
     def brute_force(
         self,
@@ -44,6 +48,8 @@ class AttackLabService:
         user_agent: str | None = None,
     ) -> AttackExperiment:
         self._ensure_enabled()
+        searchable_bits = clamp_searchable_bits(searchable_bits)
+        enforce_plaintext_size(plaintext, label="plaintext")
         algorithm = CryptoAlgorithm.CUSTOM_SPN.value
         crypto = CryptoLabService(self.db)
         material, key_bytes = crypto.resolve_key(
@@ -102,6 +108,7 @@ class AttackLabService:
         user_agent: str | None = None,
     ) -> AttackExperiment:
         self._ensure_enabled()
+        enforce_plaintext_size(plaintext, label="plaintext")
         algorithm = CryptoAlgorithm.CUSTOM_SPN.value
         crypto = CryptoLabService(self.db)
         material, key_bytes = crypto.resolve_key(

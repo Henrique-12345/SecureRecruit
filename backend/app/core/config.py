@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     CRYPTO_PBKDF2_ITERATIONS: int = 100_000
     STEGO_DIRECTORY: str = "./uploads/stego"
     CRYPTO_LAB_MAX_ATTACK_ATTEMPTS: int = 50_000
+    CRYPTO_MAX_PLAINTEXT_BYTES: int = 50_000
+    STEGO_MAX_COVER_BYTES: int = 8 * 1024 * 1024
+    CRYPTO_LAB_MAX_SEARCHABLE_BITS: int = 16
 
     @property
     def sqlalchemy_database_url(self) -> str:

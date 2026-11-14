@@ -39,7 +39,7 @@ docker compose up --build
 
 - Frontend: http://localhost:5173
 - Backend/API docs: http://localhost:8000/docs
-- PostgreSQL: localhost:5432
+- PostgreSQL: localhost:5433 (Docker mapeia 5433→5432 para não conflitar com Postgres do sistema)
 
 ### Desenvolvimento local
 
@@ -79,8 +79,16 @@ Veja `.env.example`:
 | `MAX_UPLOAD_SIZE` | Limite em bytes |
 | `ALLOWED_FILE_TYPES` | MIME types aceitos |
 | `CORS_ORIGINS` | Origens permitidas |
+| `CRYPTO_LAB_ENABLED` | Liga/desliga Crypto Lab (Unidade 2) |
+| `CRYPTO_MASTER_SECRET` | Segredo para derivação de chaves do lab |
+| `STEGO_DIRECTORY` | Pasta de imagens stego |
+| `CRYPTO_MAX_PLAINTEXT_BYTES` | Limite de plaintext no lab |
+| `STEGO_MAX_COVER_BYTES` | Limite de PNG capa/stego |
+| `CRYPTO_LAB_MAX_SEARCHABLE_BITS` | Teto do BF truncado (lab) |
 
 Sem `AI_API_KEY`, o sistema usa analisador heurístico local determinístico.
+
+**Crypto Lab (admin):** UI em `/admin/crypto` e `/admin/security-dashboard`. Detalhes em `docs/security/unidade-2/`.
 
 ## 7. Migrations
 
@@ -123,6 +131,7 @@ Senha de todos: `Demo@1234`
 - `POST /api/v1/jobs/{id}/applications` · `PATCH /api/v1/applications/{id}/status`
 - `POST /api/v1/ai/analyze-resume` · `POST /api/v1/ai/match-resume-job`
 - `GET /api/v1/admin/users` · `GET /api/v1/admin/logs`
+- Crypto Lab (admin): `/api/v1/crypto/*` · `/api/v1/stego/*` · `/api/v1/analytics/*` · `/api/v1/anomalies/*`
 
 Documentação detalhada: `docs/api/api.md`.
 

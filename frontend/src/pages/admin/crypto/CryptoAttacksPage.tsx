@@ -93,11 +93,11 @@ export function CryptoAttacksPage() {
           </label>
           {tab === 'brute_force' && (
             <label>
-              Bits pesquisáveis (1–20)
+              Bits pesquisáveis (1–16)
               <input
                 type="number"
                 min={1}
-                max={20}
+                max={16}
                 value={bits}
                 onChange={(e) => setBits(Number(e.target.value))}
               />

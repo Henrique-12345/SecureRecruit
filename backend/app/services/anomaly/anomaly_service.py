@@ -12,20 +12,20 @@ from uuid import UUID
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.core.enums import (
     AnomalySeverity,
     AnomalyType,
     CryptoOperationType,
     SecurityEventType,
 )
-from app.core.exceptions import ForbiddenError, NotFoundError
+from app.core.exceptions import NotFoundError
 from app.models.anomaly_event import AnomalyEvent
 from app.models.crypto_operation import CryptoOperation
 from app.models.resume import Resume
 from app.models.security_log import SecurityLog
 from app.models.user import User
 from app.services.audit_service import AuditService
+from app.services.crypto.guards import ensure_crypto_lab_enabled
 from app.services.hash_service import verify_file_integrity
 
 
@@ -43,8 +43,7 @@ class AnomalyService:
         self.db = db
 
     def _ensure_enabled(self) -> None:
-        if not settings.CRYPTO_LAB_ENABLED:
-            raise ForbiddenError("Crypto Lab is disabled")
+        ensure_crypto_lab_enabled()
 
     def run_detection(
         self,

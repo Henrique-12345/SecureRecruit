@@ -28,9 +28,27 @@ def _ensure_data_dir(path_str: str) -> Path:
     raise RuntimeError(f"Cannot create data directory for {path_str}: {last_error}")
 
 
+def _warn_insecure_defaults() -> None:
+    if settings.APP_ENV.lower() not in {"production", "prod"}:
+        return
+    weak = []
+    if settings.JWT_SECRET_KEY.startswith("change-me"):
+        weak.append("JWT_SECRET_KEY")
+    if settings.CRYPTO_MASTER_SECRET.startswith("change-me"):
+        weak.append("CRYPTO_MASTER_SECRET")
+    if weak:
+        import logging
+
+        logging.getLogger("securerecruit").warning(
+            "Insecure default secrets in production: %s — rotate before academic demo goes public.",
+            ", ".join(weak),
+        )
+
+
 def create_app() -> FastAPI:
     _ensure_data_dir(settings.UPLOAD_DIRECTORY)
     _ensure_data_dir(settings.STEGO_DIRECTORY)
+    _warn_insecure_defaults()
 
     app = FastAPI(
         title=settings.APP_NAME,

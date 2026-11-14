@@ -10,7 +10,6 @@ from typing import Any
 from sqlalchemy import case, func
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.core.enums import (
     AttackType,
     CryptoAlgorithm,
@@ -18,12 +17,13 @@ from app.core.enums import (
     CryptoOperationType,
     SecurityEventType,
 )
-from app.core.exceptions import AppError, ForbiddenError
+from app.core.exceptions import AppError
 from app.models.attack_experiment import AttackExperiment
 from app.models.crypto_operation import CryptoOperation
 from app.models.security_log import SecurityLog
 from app.models.stego_artifact import StegoArtifact
 from app.models.user import User
+from app.services.crypto.guards import ensure_crypto_lab_enabled
 
 
 class AnalyticsService:
@@ -31,8 +31,7 @@ class AnalyticsService:
         self.db = db
 
     def _ensure_enabled(self) -> None:
-        if not settings.CRYPTO_LAB_ENABLED:
-            raise ForbiddenError("Crypto Lab is disabled")
+        ensure_crypto_lab_enabled()
 
     def events_summary(self, *, hours: int = 24) -> dict[str, Any]:
         self._ensure_enabled()

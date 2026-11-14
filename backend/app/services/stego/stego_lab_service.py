@@ -11,16 +11,20 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.enums import CryptoAlgorithm, CryptoInputKind, CryptoOperationType, SecurityEventType
-from app.core.exceptions import AppError, ForbiddenError, NotFoundError
+from app.core.exceptions import AppError, NotFoundError
 from app.models.crypto_operation import CryptoOperation
 from app.models.stego_artifact import StegoArtifact
 from app.models.user import User
 from app.services.audit_service import AuditService
 from app.services.crypto.crypto_lab_service import CryptoLabService
+from app.services.crypto.guards import (
+    ensure_crypto_lab_enabled,
+    enforce_cover_size,
+    enforce_plaintext_size,
+)
 from app.services.stego import lsb_png
 
 
-MAX_COVER_SIZE = 8 * 1024 * 1024
 PNG_MIME = "image/png"
 
 
@@ -31,8 +35,7 @@ class StegoLabService:
         self.stego_dir.mkdir(parents=True, exist_ok=True)
 
     def _ensure_enabled(self) -> None:
-        if not settings.CRYPTO_LAB_ENABLED:
-            raise ForbiddenError("Crypto Lab is disabled")
+        ensure_crypto_lab_enabled()
 
     def embed(
         self,
@@ -46,6 +49,7 @@ class StegoLabService:
         user_agent: str | None = None,
     ) -> StegoArtifact:
         self._ensure_enabled()
+        enforce_plaintext_size(plaintext, label="stego plaintext")
         cover_bytes = self._read_png(cover)
 
         crypto = CryptoLabService(self.db)
@@ -227,8 +231,7 @@ class StegoLabService:
         content = file.file.read()
         if not content:
             raise AppError("Empty file", status_code=400)
-        if len(content) > MAX_COVER_SIZE:
-            raise AppError("Cover/stego file exceeds maximum size", status_code=400)
+        enforce_cover_size(content)
         name = (file.filename or "").lower()
         if not name.endswith(".png"):
             raise AppError("Only PNG images are supported", status_code=400)

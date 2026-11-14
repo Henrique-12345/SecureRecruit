@@ -10,8 +10,7 @@ from app.services.crypto.metrics import avalanche_score, hamming_distance
 
 @dataclass
 class DifferentialResult:
-    plaintext_a_hex: str
-    plaintext_b_hex: str
+    plaintext_len: int
     ciphertext_a_len: int
     ciphertext_b_len: int
     hamming_bits: int
@@ -41,11 +40,10 @@ def run_differential(
 
     notes = (
         "Avalanche próximo de 0.5 indica boa difusão (ataque diferencial menos revelador). "
-        "Valores baixos sugerem difusão fraca."
+        "Valores baixos sugerem difusão fraca. Plaintext nunca é persistido."
     )
     return DifferentialResult(
-        plaintext_a_hex=plaintext.hex(),
-        plaintext_b_hex=bytes(mutated).hex(),
+        plaintext_len=len(plaintext),
         ciphertext_a_len=len(c1),
         ciphertext_b_len=len(c2),
         hamming_bits=ham,

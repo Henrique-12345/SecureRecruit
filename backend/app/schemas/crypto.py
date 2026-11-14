@@ -101,7 +101,7 @@ class CryptoOperationRead(BaseModel):
 
 class BruteForceAttackRequest(BaseModel):
     plaintext: str = Field(..., min_length=1, max_length=10_000)
-    searchable_bits: int = Field(default=12, ge=1, le=20)
+    searchable_bits: int = Field(default=12, ge=1, le=16)
     key_id: UUID | None = None
 
 
